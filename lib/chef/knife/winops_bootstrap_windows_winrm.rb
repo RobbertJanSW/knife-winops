@@ -17,9 +17,9 @@
 #
 
 require 'chef/knife/bootstrap_windows_base'
-require 'chef/knife/winrm'
-require 'chef/knife/winrm_base'
-require 'chef/knife/winrm_knife_base'
+require 'chef/knife/winops_winrm'
+require 'chef/knife/winops_winrm_base'
+require 'chef/knife/winops_winrm_knife_base'
 
 
 class Chef

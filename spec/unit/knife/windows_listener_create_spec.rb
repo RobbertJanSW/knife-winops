@@ -17,7 +17,7 @@
 #
 
 require 'spec_helper'
-require 'chef/knife/windows_listener_create'
+require 'chef/knife/winops_windows_listener_create'
 
 describe Chef::Knife::WindowsListenerCreate do
   context "on Windows" do
