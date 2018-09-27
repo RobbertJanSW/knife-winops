@@ -1,0 +1,302 @@
+@rem
+@rem Original knife-windows author:: Seth Chisamore (<schisamo@chef.io>)
+@rem Copyright:: Copyright (c) 2011-2016 Chef Software, Inc.
+@rem License:: Apache License, Version 2.0
+@rem
+@rem Licensed under the Apache License, Version 2.0 (the "License");
+@rem you may not use this file except in compliance with the License.
+@rem You may obtain a copy of the License at
+@rem
+@rem     http://www.apache.org/licenses/LICENSE-2.0
+@rem
+@rem Unless required by applicable law or agreed to in writing, software
+@rem distributed under the License is distributed on an "AS IS" BASIS,
+@rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+@rem See the License for the specific language governing permissions and
+@rem limitations under the License.
+@rem
+
+@rem Use delayed environment expansion so that ERRORLEVEL can be evaluated with the
+@rem !ERRORLEVEL! syntax which evaluates at execution of the line of script, not when
+@rem the line is read. See help for the /E switch from cmd.exe /? .
+@setlocal ENABLEDELAYEDEXPANSION
+
+@rem Determine the version and the architecture
+
+@FOR /F "usebackq tokens=1-8 delims=.[] " %%A IN (`ver`) DO (
+@set WinMajor=%%D
+@set WinMinor=%%E
+@set WinBuild=%%F
+)
+
+@echo Detected Windows Version %WinMajor%.%WinMinor% Build %WinBuild%
+
+@set LATEST_OS_VERSION_MAJOR=6
+@set LATEST_OS_VERSION_MINOR=3
+
+@if /i %WinMajor% GTR %LATEST_OS_VERSION_MAJOR% goto VersionUnknown
+@if /i %WinMajor% EQU %LATEST_OS_VERSION_MAJOR%  (
+  @if /i %WinMinor% GTR %LATEST_OS_VERSION_MINOR% goto VersionUnknown
+)
+
+goto Version%WinMajor%.%WinMinor%
+
+:VersionUnknown
+@rem If this is an unknown version of windows set the default
+@set MACHINE_OS=2008r2
+@echo Warning: Unknown version of Windows, assuming default of Windows %MACHINE_OS%
+goto architecture_select
+
+:Version6.0
+@set MACHINE_OS=2008
+goto architecture_select
+
+:Version5.2
+@set MACHINE_OS=2003r2
+goto architecture_select
+
+:Version6.1
+@set MACHINE_OS=2008r2
+goto architecture_select
+
+:Version6.2
+@set MACHINE_OS=2012
+goto architecture_select
+
+@rem Currently Windows Server 2012 R2 is treated as equivalent to Windows Server 2012
+:Version6.3
+goto Version6.2
+
+:architecture_select
+<% if knife_config[:architecture] %>
+  @set MACHINE_ARCH=<%= knife_config[:architecture] %>
+
+  <% if knife_config[:architecture] == "x86_64" %>
+      IF "%PROCESSOR_ARCHITECTURE%"=="x86" IF not defined PROCESSOR_ARCHITEW6432 (
+      echo You specified bootstrap_architecture as x86_64 but the target machine is i386. A 64 bit program cannot run on a 32 bit machine. > "&2"
+      echo Exiting without bootstrapping. > "&2"
+      exit /b 1
+    )
+  <% end %>
+<% else %>
+  @set MACHINE_ARCH=x86_64
+  IF "%PROCESSOR_ARCHITECTURE%"=="x86" IF not defined PROCESSOR_ARCHITEW6432 @set MACHINE_ARCH=i686
+<% end %>
+
+<% unless @chef_config[:knife][:bootstrap_debug] %>
+@echo off
+<% end %>
+
+echo Passing all settings to the system environment
+<% if @config[:bootstrap_proxy] -%>
+setx CHEF_HTTP_PROXY "<%= @config[:bootstrap_proxy] %>" /m
+<% elsif knife_config[:bootstrap_proxy] -%>
+setx CHEF_HTTP_PROXY "<%= knife_config[:bootstrap_proxy] %>" /m
+<% end -%>
+
+<% if @config[:msi_url] -%>
+setx CHEF_REMOTE_SOURCE_MSI_URL "<%= @config[:msi_url] %>" /m
+set CHEF_REMOTE_SOURCE_MSI_URL="<%= @config[:msi_url] %>"
+<% end %>
+
+<% if @chef_config[:knife][:bootstrap_install_command] %>
+setx CHEF_CUSTOM_INSTALL_COMMAND "<%= (@chef_config[:knife][:bootstrap_install_command]).gsub(/(\")/, '\\"') %>" /m
+<% end %>
+
+<% if @chef_config[:knife][:bootstrap_run_command] %>
+setx CHEF_CUSTOM_RUN_COMMAND "<%= (@chef_config[:knife][:bootstrap_run_command]).gsub(/(\")/, '\\"') %>" /m
+<% end %>
+
+<% if @config[:bootstrap_run_command] %>
+setx CHEF_CUSTOM_RUN_COMMAND "<%= (@config[:bootstrap_run_command]).gsub(/(\")/, '\\"') %>" /m
+<% end %>
+
+<% if @config[:install_as_service] %>
+setx CHEF_EXTRA_MSI_PARAMETERS "ADDLOCAL=\"ChefClientFeature,ChefServiceFeature\"" /m
+<% end %>
+
+setx CHEF_ENVIRONMENT_OPTION "<%= bootstrap_environment.nil? ? '' : " -E #{bootstrap_environment}" %>" /m
+setx CHEF_LOCAL_MSI_PATH "<%= local_download_path %>" /m
+
+setx CHEF_CLIENT_MSI_LOG_PATH "%TEMP%\chef-client-msi.log" /m
+set CHEF_CLIENT_MSI_LOG_PATH=%TEMP%\chef-client-msi.log
+
+setx CHEF_PS_EXITCODE "<%= bootstrap_directory %>\ps_exitcode.txt" /m
+set CHEF_PS_EXITCODE=<%= bootstrap_directory %>\ps_exitcode.txt
+
+setx CHEF_PS_LOG "<%= bootstrap_directory %>\ps_log.txt" /m
+set CHEF_PS_LOG=<%= bootstrap_directory %>\ps_log.txt
+
+setx CHEF_BOOTSTRAP_DIRECTORY "<%= bootstrap_directory %>" /m
+set CHEF_BOOTSTRAP_DIRECTORY="<%= bootstrap_directory %>"
+
+setx CHEF_MACHINE_OS %MACHINE_OS% /m
+set CHEF_MACHINE_OS=%MACHINE_OS%
+
+setx CHEF_MACHINE_ARCH %MACHINE_ARCH% /m
+set CHEF_MACHINE_ARCH=%MACHINE_ARCH%
+
+setx CHEF_DOWNLOAD_CONTEXT PowerShell /m
+set CHEF_DOWNLOAD_CONTEXT=PowerShell
+
+setx CHEF_VERSION "<%= chef_version_in_url %>" /m
+set CHEF_VERSION="<%= chef_version_in_url %>"
+
+echo Checking for existing directory "%CHEF_BOOTSTRAP_DIRECTORY%"...
+IF NOT EXIST %CHEF_BOOTSTRAP_DIRECTORY% (
+    echo Existing directory not found, creating.
+    mkdir %CHEF_BOOTSTRAP_DIRECTORY%
+) else (
+    echo Existing directory found, skipping creation.
+)
+
+echo Clean up potential existing Powershell bootstrap logfile
+del %CHEF_PS_LOG% /Q 2> nul
+del %CHEF_PS_EXITCODE% /Q 2> nul
+
+@echo Writing required files
+> <%= bootstrap_directory %>\writefile.ps1 (
+<%= win_ps_write_filechunk %>
+)
+
+<%= win_ps_bootstrap(bootstrap_directory+'\bootstrap.ps1') %>
+<%= win_cmd_tail(bootstrap_directory+'\tail.cmd') %>
+<%= win_schedtask_xml(bootstrap_directory+'\Chef_bootstrap.xml') %>
+
+<% if @config[:payload_folder] -%>
+mkdir <%= bootstrap_directory %>\extra_files
+<%= win_folder_cp(@config[:payload_folder], bootstrap_directory+'\extra_files') %>
+<% end -%>
+
+<% if @config[:chef_server] && (defined? client_pem) && client_pem -%>
+echo Clearing and writing client key...
+del <%= bootstrap_directory %>\client.pem /Q 2> nul
+> <%= bootstrap_directory %>\client.pem (
+ <%= escape_and_echo(::File.read(::File.expand_path(client_pem))) %>
+)
+echo Client key written
+<% end -%>
+
+<% if validation_key -%>
+echo Writing validation key...
+> <%= bootstrap_directory %>\validation.pem (
+<%= validation_key.match('^echo\.') ? validation_key : escape_and_echo(validation_key) %>
+)
+echo Validation key written.
+<% end -%>
+
+<% if secret -%>
+> <%= bootstrap_directory %>\encrypted_data_bag_secret (
+<%= secret %>
+)
+<% end -%>
+
+<%# Generate Ohai Hints -%>
+<% unless @chef_config[:knife][:hints].nil? || @chef_config[:knife][:hints].empty? -%>
+mkdir <%= bootstrap_directory %>\ohai\hints
+
+<% @chef_config[:knife][:hints].each do |name, hash| -%>
+> <%= bootstrap_directory %>\ohai\hints\<%= name %>.json (
+  <%= escape_and_echo(hash.to_json) %>
+)
+<% end -%>
+<% end -%>
+
+> <%= bootstrap_directory %>\client.rb (
+<%= config_content %>
+)
+<% if @config[:bootstrap_proxy] -%>
+findstr /V /I _proxy <%= bootstrap_directory %>\client.rb  > <%= bootstrap_directory %>\chef_client.rb
+echo http_proxy   "<%= @config[:bootstrap_proxy] %>" >> <%= bootstrap_directory %>\chef_client.rb
+echo https_proxy   "<%= @config[:bootstrap_proxy] %>" >> <%= bootstrap_directory %>\chef_client.rb
+move /Y <%= bootstrap_directory %>\chef_client.rb <%= bootstrap_directory %>\client.rb
+<% end -%>
+
+> <%= bootstrap_directory %>\first-boot.json (
+<%= first_boot %>
+)
+
+rem The scheduled task creation could use error handling (feels like a corner case though):
+c:/windows/system32/schtasks.exe /Create /XML <%= bootstrap_directory %>\Chef_bootstrap.xml /tn Chef_bootstrap
+
+echo *******************************************************************
+echo Starting Powershell bootstrap scheduled task
+c:/windows/system32/schtasks.exe /run /tn Chef_bootstrap
+
+<% unless @chef_config[:knife][:bootstrap_debug] %>
+@echo off
+<% end %>
+
+echo *******************************************************************
+echo Waiting for Powershell bootstrap log file to appear
+<%= win_cmd_wait_for_file('CHEF_PS_LOG') %>
+
+echo Tailing Powershell bootstrap log
+call <%= bootstrap_directory %>\tail.cmd "%CHEF_PS_LOG%" 2> nul
+
+echo *******************************************************************
+echo Chef Powershell Bootstrap exited. Checking exit code.
+
+<%= win_ps_exitcheck %>
+IF NOT !psexitcode!==0 (
+  IF !psexitcode!==36512 (
+    echo *******************************************************************
+    echo Now dumping MSI error log %CHEF_CLIENT_MSI_LOG_PATH%
+    echo *******************************************************************
+    type %CHEF_CLIENT_MSI_LOG_PATH% 2> nul
+    echo *******************************************************************
+    echo Done dumping MSI log. Exiting...
+    exit !psexitcode!
+  )
+  echo *******************************************************************
+  echo Powershell bootstrap script exit code was not 0! Stopping!
+  echo The exit code of the script was !psexitcode!
+  exit !psexitcode!
+)
+echo Powershell bootstrap script reported succesful Chef install.
+<% unless @chef_config[:knife][:bootstrap_run_command] || @config[:bootstrap_run_command] %>
+set CHEF_CLIENT_LOG=<%= bootstrap_directory %>\firstrun.log
+<%= win_cmd_wait_for_file('CHEF_CLIENT_LOG') %>
+echo *******************************************************************
+call <%= bootstrap_directory %>\tail.cmd "<%= bootstrap_directory %>\firstrun.log" 2> nul
+<% end %>
+
+<% if @config[:bootstrap_tail_file] %>
+echo Tailing custom log file <%= @config[:bootstrap_tail_file] %>
+set CUSTOM_LOG=<%= @config[:bootstrap_tail_file] %>
+<%= win_cmd_wait_for_file('CUSTOM_LOG') %>
+echo *******************************************************************
+call <%= bootstrap_directory %>\tail.cmd "<%= @config[:bootstrap_tail_file] %>" 2> nul
+<% end %>
+
+echo *******************************************************************
+echo Chef Powershell Bootstrap exited. Checking exit code.
+
+<%= win_ps_exitcheck %>
+IF NOT !psexitcode!==0 (
+  echo *******************************************************************
+<% unless @chef_config[:knife][:bootstrap_run_command] %>
+  echo First Chef run exit code was not 0
+  echo Now dumping Chef stacktrace log
+  echo *******************************************************************
+  type c:\chef\cache\chef-stacktrace.out 2> nul
+  echo *******************************************************************
+  echo Done dumping Chef stacktrace log. Exiting...
+<% else %>
+  echo Custom bootstrap command run exit code was not 0
+<% end %>
+) else (
+<% unless @chef_config[:knife][:bootstrap_run_command] %>
+  echo Powershell bootstrap script and the first Chef run ran successfully! Running cleanup.
+<% else %>
+  echo Custom bootstrap command ran succesfully. Running cleanup.
+<% end %>
+)
+
+del %CHEF_PS_LOG% /Q 2> nul
+del %CHEF_PS_EXITCODE% /Q 2> nul
+del <%= bootstrap_directory+'\tail.cmd' %> /Q 2> nul
+del <%= bootstrap_directory+'\bootstrap.ps1' %> /Q 2> nul
+del <%= bootstrap_directory+'\writefile.ps1' %> /Q 2> nul
+
+exit !psexitcode!
