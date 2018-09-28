@@ -53,7 +53,7 @@ describe 'Knife::Windows::Core msi download functionality for knife Windows winr
     @local_file_download_destination = "#{@temp_directory}/chef-client-latest.msi"
 
     source_code_directory = File.dirname(__FILE__)
-    @template_file_path ="#{source_code_directory}/../../lib/chef/knife/bootstrap/windows-chef-client-msi.erb"
+    @template_file_path ="#{source_code_directory}/../../lib/chef/knife/winops_bootstrap/windows-chef-client-msi.erb"
   end
 
   after(:all) do
@@ -150,7 +150,7 @@ describe "bootstrap_install_command functionality through WinRM protocol" do
   context "bootstrap_install_command option is not specified" do
     let(:bootstrap) { Chef::Knife::BootstrapWindowsWinRM.new([]) }
     before do
-      @template_file_path ="../../lib/chef/knife/bootstrap/windows-chef-client-msi.erb"
+      @template_file_path ="../../lib/chef/knife/winops_bootstrap/windows-chef-client-msi.erb"
       @template_input = sample_data(@template_file_path)
     end
 
@@ -175,7 +175,7 @@ describe "bootstrap_install_command functionality through WinRM protocol" do
     let(:bootstrap) { Chef::Knife::BootstrapWindowsWinRM.new(['--bootstrap-install-command', 'chef-client -o recipe[cbk1::rec2]']) }
     before do
       bootstrap.config[:bootstrap_install_command] = "chef-client -o recipe[cbk1::rec2]"
-	  @template_file_path ="../../lib/chef/knife/bootstrap/windows-chef-client-msi.erb"
+	  @template_file_path ="../../lib/chef/knife/winops_bootstrap/windows-chef-client-msi.erb"
       @template_input = sample_data(@template_file_path)
     end
 
@@ -200,7 +200,7 @@ describe "bootstrap_install_command functionality through SSH protocol", :chef_l
   context "bootstrap_install_command option is not specified" do
     let(:bootstrap) { Chef::Knife::BootstrapWindowsSSH.new([]) }
     before do
-      @template_file_path ="../../lib/chef/knife/bootstrap/windows-chef-client-msi.erb"
+      @template_file_path ="../../lib/chef/knife/winops_bootstrap/windows-chef-client-msi.erb"
       @template_input = sample_data(@template_file_path)
     end
 
@@ -213,7 +213,7 @@ describe "bootstrap_install_command functionality through SSH protocol", :chef_l
     let(:bootstrap) { Chef::Knife::BootstrapWindowsSSH.new(['--bootstrap-install-command', 'chef-client -o recipe[cbk1::rec2]']) }
     before do
       bootstrap.config[:bootstrap_install_command] = "chef-client -o recipe[cbk1::rec2]"
-      @template_file_path ="../../lib/chef/knife/bootstrap/windows-chef-client-msi.erb"
+      @template_file_path ="../../lib/chef/knife/winops_bootstrap/windows-chef-client-msi.erb"
       @template_input = sample_data(@template_file_path)
     end
 

@@ -17,7 +17,7 @@
 #
 
 require 'spec_helper'
-require 'chef/knife/core/windows_bootstrap_context'
+require 'chef/knife/winops_core/windows_bootstrap_context'
 describe Chef::Knife::Core::WinBootstrapContext do
   let(:mock_bootstrap_context) { Chef::Knife::Core::WinBootstrapContext.new({ }, nil, { :knife => {} }) }
 

@@ -16,7 +16,7 @@
 # limitations under the License.
 
 
-TEMPLATE_FILE = File.expand_path(File.dirname(__FILE__)) + "/../../../lib/chef/knife/bootstrap/windows-chef-client-msi.erb"
+TEMPLATE_FILE = File.expand_path(File.dirname(__FILE__)) + "/../../../lib/chef/knife/winops_bootstrap/windows-chef-client-msi.erb"
 
 require 'spec_helper'
 
