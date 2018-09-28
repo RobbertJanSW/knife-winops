@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-require 'chef/knife/winops_core/bootstrap_context'
+require 'chef/knife/core/bootstrap_context'
 # Chef::Util::PathHelper in Chef 11 is a bit juvenile still
 require 'knife-winops/path_helper'
 # require 'chef/util/path_helper'
