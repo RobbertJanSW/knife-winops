@@ -17,9 +17,9 @@
 #
 
 require 'chef/knife'
-require 'chef/knife/bootstrap'
+require 'chef/knife/winops_bootstrap'
 require 'chef/encrypted_data_bag_item'
-require 'chef/knife/core/windows_bootstrap_context'
+require 'chef/knife/winops_core/windows_bootstrap_context'
 require 'chef/knife/winops_knife_windows_base'
 # Chef 11 PathHelper doesn't have #home
 #require 'chef/util/path_helper'
