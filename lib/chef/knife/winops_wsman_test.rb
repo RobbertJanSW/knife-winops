@@ -25,7 +25,7 @@ class Chef
   class Knife
     class WsmanTest < Knife
 
-      include Chef::Knife::WinrmCommandSharedFunctions
+      include Chef::Knife::WinrmCommandCommon
 
       deps do
         require 'chef/search/query'

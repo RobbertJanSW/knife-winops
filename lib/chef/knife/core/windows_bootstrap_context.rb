@@ -31,7 +31,7 @@ class Chef
       # * @config   - a hash of knife's config values
       # * @run_list - the run list for the node to boostrap
       #
-      class WindowsBootstrapContext < BootstrapContext
+      class WinBootstrapContext < BootstrapContext
         PathHelper = ::Knife::Windows::PathHelper
 
         attr_accessor :client_pem
@@ -230,7 +230,7 @@ filename_in_envvar
         end
 
         def bootstrap_context
-          @bootstrap_context ||= Knife::Core::WindowsBootstrapContext.new(@config, @config[:run_list], Chef::Config)
+          @bootstrap_context ||= Knife::Core::WinBootstrapContext.new(@config, @config[:run_list], Chef::Config)
         end
 
         def win_ps_bootstrap(target_filename)

@@ -18,11 +18,11 @@
 
 require 'spec_helper'
 require 'chef/knife/core/windows_bootstrap_context'
-describe Chef::Knife::Core::WindowsBootstrapContext do
-  let(:mock_bootstrap_context) { Chef::Knife::Core::WindowsBootstrapContext.new({ }, nil, { :knife => {} }) }
+describe Chef::Knife::Core::WinBootstrapContext do
+  let(:mock_bootstrap_context) { Chef::Knife::Core::WinBootstrapContext.new({ }, nil, { :knife => {} }) }
 
   before do
-     allow(Chef::Knife::Core::WindowsBootstrapContext).to receive(:new).and_return(mock_bootstrap_context)
+     allow(Chef::Knife::Core::WinBootstrapContext).to receive(:new).and_return(mock_bootstrap_context)
    end
 
   describe "fips" do
@@ -242,7 +242,7 @@ EXPECTED
 
   describe "bootstrap_install_command for bootstrap through WinRM" do
     context "when bootstrap_install_command option is passed on CLI" do
-      let(:bootstrap) { Chef::Knife::BootstrapWindowsWinrm.new(['--bootstrap-install-command', 'chef-client']) }
+      let(:bootstrap) { Chef::Knife::BootstrapWindowsWinRM.new(['--bootstrap-install-command', 'chef-client']) }
       before do
         bootstrap.config[:bootstrap_install_command] = "chef-client"
       end
@@ -258,7 +258,7 @@ EXPECTED
     end
 
     context "when bootstrap_install_command option is not passed on CLI" do
-      let(:bootstrap) { Chef::Knife::BootstrapWindowsWinrm.new([]) }
+      let(:bootstrap) { Chef::Knife::BootstrapWindowsWinRM.new([]) }
       it "does not set the bootstrap_install_command option under Chef::Config::Knife object" do
         expect(Chef::Config[:knife][:bootstrap_install_command]). to eq(nil)
       end
@@ -267,7 +267,7 @@ EXPECTED
 
   describe "bootstrap_install_command for bootstrap through SSH" do
     context "when bootstrap_install_command option is passed on CLI" do
-      let(:bootstrap) { Chef::Knife::BootstrapWindowsSsh.new(['--bootstrap-install-command', 'chef-client']) }
+      let(:bootstrap) { Chef::Knife::BootstrapWindowsSSH.new(['--bootstrap-install-command', 'chef-client']) }
       before do
         bootstrap.config[:bootstrap_install_command] = "chef-client"
       end
@@ -283,7 +283,7 @@ EXPECTED
     end
 
     context "when bootstrap_install_command option is not passed on CLI" do
-      let(:bootstrap) { Chef::Knife::BootstrapWindowsSsh.new([]) }
+      let(:bootstrap) { Chef::Knife::BootstrapWindowsSSH.new([]) }
       it "does not set the bootstrap_install_command option under Chef::Config::Knife object" do
         expect(Chef::Config[:knife][:bootstrap_install_command]). to eq(nil)
       end

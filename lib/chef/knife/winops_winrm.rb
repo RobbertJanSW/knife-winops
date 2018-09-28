@@ -28,8 +28,8 @@ class Chef
   class Knife
     class Winrm < Knife
 
-      include Chef::Knife::WinrmCommandSharedFunctions
-      include Chef::Knife::KnifeWindowsBase
+      include Chef::Knife::WinrmCommandCommon
+      include Chef::Knife::KnifeWindowsCore
 
       deps do
         require 'readline'

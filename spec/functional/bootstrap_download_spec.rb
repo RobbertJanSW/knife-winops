@@ -64,7 +64,7 @@ describe 'Knife::Windows::Core msi download functionality for knife Windows winr
   end
 
   describe "running on any version of the Windows OS", :windows_only do
-    let(:mock_bootstrap_context) { Chef::Knife::Core::WindowsBootstrapContext.new({ }, nil, { :knife => {} }) }
+    let(:mock_bootstrap_context) { Chef::Knife::Core::WinBootstrapContext.new({ }, nil, { :knife => {} }) }
     let(:mock_winrm) { Chef::Knife::Winrm.new }
 
     before do
@@ -86,7 +86,7 @@ describe 'Knife::Windows::Core msi download functionality for knife Windows winr
       allow(mock_winrm.ui).to receive(:ask).and_return(nil)
       allow(Chef::Knife::Winrm).to receive(:new).and_return(mock_winrm)
 
-      allow(Chef::Knife::Core::WindowsBootstrapContext).to receive(:new).and_return(mock_bootstrap_context)
+      allow(Chef::Knife::Core::WinBootstrapContext).to receive(:new).and_return(mock_bootstrap_context)
       Chef::Config[:knife] = {:winrm_transport => 'plaintext', :chef_node_name => 'foo.example.com', :winrm_authentication_protocol => 'negotiate'}
     end
 
@@ -95,7 +95,7 @@ describe 'Knife::Windows::Core msi download functionality for knife Windows winr
     end
 
     context "when provided a custom msi_url to fetch from" do
-      let(:mock_bootstrap_context) { Chef::Knife::Core::WindowsBootstrapContext.new(
+      let(:mock_bootstrap_context) { Chef::Knife::Core::WinBootstrapContext.new(
         { :msi_url => "file:///C:/Windows/System32/xcopy.exe" }, nil, { :knife => {} }) }
       it "downloads the chef-client MSI from a custom path during winrm bootstrap" do
         run_download_scenario
@@ -103,7 +103,7 @@ describe 'Knife::Windows::Core msi download functionality for knife Windows winr
     end
 
      context "when provided a custom msi_url with space in path to fetch from" do
-      let(:mock_bootstrap_context) { Chef::Knife::Core::WindowsBootstrapContext.new(
+      let(:mock_bootstrap_context) { Chef::Knife::Core::WinBootstrapContext.new(
         { :msi_url => "file:///C:/Program Files/Windows NT/Accessories/wordpad.exe" }, nil, { :knife => {} }) }
       it "downloads the chef-client MSI from a custom path with spaces during winrm bootstrap" do
         run_download_scenario
@@ -125,7 +125,7 @@ describe 'Knife::Windows::Core msi download functionality for knife Windows winr
   def run_download_scenario
     clean_test_case
 
-    winrm_bootstrapper = Chef::Knife::BootstrapWindowsWinrm.new([ "127.0.0.1" ])
+    winrm_bootstrapper = Chef::Knife::BootstrapWindowsWinRM.new([ "127.0.0.1" ])
     winrm_bootstrapper.client_builder = instance_double("Chef::Knife::Bootstrap::ClientBuilder", :run => nil, :client_path => nil)
 
     allow(WinRM::Connection).to receive(:new).and_return(Dummy::Connection.new)
@@ -148,7 +148,7 @@ end
 
 describe "bootstrap_install_command functionality through WinRM protocol" do
   context "bootstrap_install_command option is not specified" do
-    let(:bootstrap) { Chef::Knife::BootstrapWindowsWinrm.new([]) }
+    let(:bootstrap) { Chef::Knife::BootstrapWindowsWinRM.new([]) }
     before do
       @template_file_path ="../../lib/chef/knife/bootstrap/windows-chef-client-msi.erb"
       @template_input = sample_data(@template_file_path)
@@ -172,7 +172,7 @@ describe "bootstrap_install_command functionality through WinRM protocol" do
   end
 
   context "bootstrap_install_command option is specified" do
-    let(:bootstrap) { Chef::Knife::BootstrapWindowsWinrm.new(['--bootstrap-install-command', 'chef-client -o recipe[cbk1::rec2]']) }
+    let(:bootstrap) { Chef::Knife::BootstrapWindowsWinRM.new(['--bootstrap-install-command', 'chef-client -o recipe[cbk1::rec2]']) }
     before do
       bootstrap.config[:bootstrap_install_command] = "chef-client -o recipe[cbk1::rec2]"
 	  @template_file_path ="../../lib/chef/knife/bootstrap/windows-chef-client-msi.erb"
@@ -198,7 +198,7 @@ end
 
 describe "bootstrap_install_command functionality through SSH protocol", :chef_lt_12_5_only => true do
   context "bootstrap_install_command option is not specified" do
-    let(:bootstrap) { Chef::Knife::BootstrapWindowsSsh.new([]) }
+    let(:bootstrap) { Chef::Knife::BootstrapWindowsSSH.new([]) }
     before do
       @template_file_path ="../../lib/chef/knife/bootstrap/windows-chef-client-msi.erb"
       @template_input = sample_data(@template_file_path)
@@ -210,7 +210,7 @@ describe "bootstrap_install_command functionality through SSH protocol", :chef_l
   end
 
   context "bootstrap_install_command option is specified" do
-    let(:bootstrap) { Chef::Knife::BootstrapWindowsSsh.new(['--bootstrap-install-command', 'chef-client -o recipe[cbk1::rec2]']) }
+    let(:bootstrap) { Chef::Knife::BootstrapWindowsSSH.new(['--bootstrap-install-command', 'chef-client -o recipe[cbk1::rec2]']) }
     before do
       bootstrap.config[:bootstrap_install_command] = "chef-client -o recipe[cbk1::rec2]"
       @template_file_path ="../../lib/chef/knife/bootstrap/windows-chef-client-msi.erb"

@@ -18,7 +18,7 @@
 
 class Chef
   class Knife
-    module KnifeWindowsBase
+    module KnifeWindowsCore
 
       def locate_config_value(key)
         key = key.to_sym

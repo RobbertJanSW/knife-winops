@@ -24,11 +24,11 @@ require 'chef/knife/winops_winrm_knife_base'
 
 class Chef
   class Knife
-    class BootstrapWindowsWinrm < Bootstrap
+    class BootstrapWindowsWinRM < Bootstrap
 
-      include Chef::Knife::BootstrapWindowsBase
-      include Chef::Knife::WinrmBase
-      include Chef::Knife::WinrmCommandSharedFunctions
+      include Chef::Knife::BootstrapWindowsCore
+      include Chef::Knife::WinrmCore
+      include Chef::Knife::WinrmCommandCommon
 
       deps do
         require 'chef/knife/core/windows_bootstrap_context'

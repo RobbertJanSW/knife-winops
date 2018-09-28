@@ -26,8 +26,8 @@ class Chef
   class Knife
     class WindowsHelper < Knife
 
-      banner "#{BootstrapWindowsWinrm.banner}\n" +
-              "#{BootstrapWindowsSsh.banner}\n" +
+      banner "#{BootstrapWindowsWinRM.banner}\n" +
+              "#{BootstrapWindowsSSH.banner}\n" +
               "#{Winrm.banner}\n" +
               "#{WsmanTest.banner}"
     end

@@ -26,9 +26,9 @@ require 'chef/knife/winops_knife_windows_base'
 
 class Chef
   class Knife
-    module BootstrapWindowsBase
+    module BootstrapWindowsCore
 
-      include Chef::Knife::KnifeWindowsBase
+      include Chef::Knife::KnifeWindowsCore
 
       # :nodoc:
       # Would prefer to do this in a rational way, but can't be done b/c of
@@ -277,7 +277,7 @@ class Chef
       end
 
       def bootstrap_context
-        @bootstrap_context ||= Knife::Core::WindowsBootstrapContext.new(config, config[:run_list], Chef::Config)
+        @bootstrap_context ||= Knife::Core::WinBootstrapContext.new(config, config[:run_list], Chef::Config)
       end
 
       def load_correct_secret

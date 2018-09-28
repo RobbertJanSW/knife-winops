@@ -20,9 +20,9 @@ require 'chef/knife/bootstrap_windows_base'
 
 class Chef
   class Knife
-    class BootstrapWindowsSsh < Bootstrap
+    class BootstrapWindowsSSH < Bootstrap
 
-      include Chef::Knife::BootstrapWindowsBase
+      include Chef::Knife::BootstrapWindowsCore
 
       deps do
         require 'chef/knife/core/windows_bootstrap_context'
