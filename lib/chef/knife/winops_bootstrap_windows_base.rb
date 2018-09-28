@@ -258,7 +258,7 @@ class Chef
         bootstrap_files << File.join(File.dirname(__FILE__), 'bootstrap/templates', "#{template}.erb")
         bootstrap_files << File.join(Knife.chef_config_dir, "bootstrap", "#{template}.erb") if Chef::Knife.chef_config_dir
         ::Knife::Windows::PathHelper.all_homes('.chef', 'bootstrap', "#{template}.erb") { |p| bootstrap_files << p }
-        bootstrap_files << Gem.find_files(File.join("chef","knife","bootstrap","#{template}.erb"))
+        bootstrap_files << Gem.find_files(File.join("chef","knife","winops_bootstrap","#{template}.erb"))
         bootstrap_files.flatten!
 
         template = Array(bootstrap_files).find do |bootstrap_template|
