@@ -18,8 +18,8 @@
 
 require 'chef/knife'
 require 'chef/knife/winops_winrm'
-require 'chef/knife/bootstrap_windows_ssh'
-require 'chef/knife/bootstrap_windows_winrm'
+require 'chef/knife/winops_bootstrap_windows_ssh'
+require 'chef/knife/winops_bootstrap_windows_winrm'
 require 'chef/knife/winops_wsman_test'
 
 class Chef
