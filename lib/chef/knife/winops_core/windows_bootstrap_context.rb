@@ -224,7 +224,7 @@ filename_in_envvar
         end
 
         def win_cmd_tail(target_filename)
-          cmd_tail_file = Gem.find_files(File.join('chef', 'knife', 'bootstrap', 'tail.cmd')).first
+          cmd_tail_file = Gem.find_files(File.join('chef', 'knife', 'winops_bootstrap', 'tail.cmd')).first
           cmd_tail_content = IO.read(cmd_tail_file)
           win_parse_file_content(cmd_tail_content, target_filename)
         end
@@ -234,13 +234,13 @@ filename_in_envvar
         end
 
         def win_ps_bootstrap(target_filename)
-          ps_bootstrap_file = Gem.find_files(File.join('chef', 'knife', 'bootstrap', 'bootstrap.ps1')).first
+          ps_bootstrap_file = Gem.find_files(File.join('chef', 'knife', 'winops_bootstrap', 'bootstrap.ps1')).first
           ps_bootstrap_content = IO.read(ps_bootstrap_file)
           win_parse_file_content(ps_bootstrap_content, target_filename)
         end
 
         def win_schedtask_xml(target_filename)
-          sched_xml_file = Gem.find_files(File.join('chef', 'knife', 'bootstrap', 'Chef_bootstrap.erb')).first
+          sched_xml_file = Gem.find_files(File.join('chef', 'knife', 'winops_bootstrap', 'Chef_bootstrap.erb')).first
           sched_xml_file_content = IO.read(sched_xml_file).chomp
           win_parse_file_content(Erubis::Eruby.new(sched_xml_file_content).evaluate(bootstrap_context), target_filename)
         end
