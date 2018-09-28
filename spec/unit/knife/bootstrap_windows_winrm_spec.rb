@@ -21,7 +21,7 @@ require 'winrm/output'
 
 Chef::Knife::Winrm.load_deps
 
-describe Chef::Knife::BootstrapWindowsWinrm do
+describe Chef::Knife::BootstrapWindowsWinRM do
   before do
     Chef::Config.reset
     bootstrap.config[:run_list] = []
@@ -45,7 +45,7 @@ describe Chef::Knife::BootstrapWindowsWinrm do
       host: "localhost"
     }
   end
-  let(:bootstrap) { Chef::Knife::BootstrapWindowsWinrm.new(['winrm', '-d', 'windows-chef-client-msi',  '-x', session_opts[:user], '-P', session_opts[:password], session_opts[:host]]) }
+  let(:bootstrap) { Chef::Knife::BootstrapWindowsWinRM.new(['winrm', '-d', 'windows-chef-client-msi',  '-x', session_opts[:user], '-P', session_opts[:password], session_opts[:host]]) }
   let(:session) { Chef::Knife::WinrmSession.new(session_opts) }
   let(:arch_session_result) {
     o = WinRM::Output.new

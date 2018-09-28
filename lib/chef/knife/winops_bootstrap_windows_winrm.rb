@@ -16,22 +16,22 @@
 # limitations under the License.
 #
 
-require 'chef/knife/bootstrap_windows_base'
-require 'chef/knife/winrm'
-require 'chef/knife/winrm_base'
-require 'chef/knife/winrm_knife_base'
+require 'chef/knife/winops_bootstrap_windows_base'
+require 'chef/knife/winops_winrm'
+require 'chef/knife/winops_winrm_base'
+require 'chef/knife/winops_winrm_knife_base'
 
 
 class Chef
   class Knife
-    class BootstrapWindowsWinrm < Bootstrap
+    class BootstrapWindowsWinRM < Bootstrap
 
-      include Chef::Knife::BootstrapWindowsBase
-      include Chef::Knife::WinrmBase
-      include Chef::Knife::WinrmCommandSharedFunctions
+      include Chef::Knife::BootstrapWindowsCore
+      include Chef::Knife::WinrmCore
+      include Chef::Knife::WinrmCommandCommon
 
       deps do
-        require 'chef/knife/core/windows_bootstrap_context'
+        require 'chef/knife/winops_core/windows_bootstrap_context'
         require 'chef/json_compat'
         require 'tempfile'
         Chef::Knife::Winrm.load_deps

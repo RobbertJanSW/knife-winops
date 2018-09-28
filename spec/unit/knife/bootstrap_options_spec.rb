@@ -68,8 +68,8 @@ expected: #{expected}
     end
   end
 
-  context 'when compared to BootstrapWindowsWinrm' do
-    let(:win_bootstrap) { Chef::Knife::BootstrapWindowsWinrm.new }
+  context 'when compared to BootstrapWindowsWinRM' do
+    let(:win_bootstrap) { Chef::Knife::BootstrapWindowsWinRM.new }
 
     # opt_map: Hash of symbols in windows mapping to symbols in core.  Name checks are
     #   ignored for these.
@@ -126,8 +126,8 @@ expected: #{expected}
     include_examples 'compare_options'
   end
 
-  context 'when compared to BootstrapWindowsSsh' do
-    let(:win_bootstrap) { Chef::Knife::BootstrapWindowsSsh.new }
+  context 'when compared to BootstrapWindowsSSH' do
+    let(:win_bootstrap) { Chef::Knife::BootstrapWindowsSSH.new }
 
     # opt_map: Hash of symbols in windows mapping to symbols in core.  Name checks are
     #   ignored for these.

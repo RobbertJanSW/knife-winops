@@ -22,7 +22,7 @@ require 'kconv'
 
 class Chef
   class Knife
-    module WinrmSharedOptions
+    module WinrmOptions
 
       # Shared command line options for knife winrm and knife wsman test
       def self.included(includer)

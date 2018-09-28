@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/knife/bootstrap_windows_base'
+require 'chef/knife/winops_bootstrap_windows_base'
 
 class Chef
   class Knife
-    class BootstrapWindowsSsh < Bootstrap
+    class BootstrapWindowsSSH < Bootstrap
 
-      include Chef::Knife::BootstrapWindowsBase
+      include Chef::Knife::BootstrapWindowsCore
 
       deps do
-        require 'chef/knife/core/windows_bootstrap_context'
+        require 'chef/knife/winops_core/windows_bootstrap_context'
         require 'chef/json_compat'
         require 'tempfile'
         require 'highline'

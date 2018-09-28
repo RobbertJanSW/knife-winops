@@ -16,11 +16,11 @@
 # limitations under the License.
 
 
-TEMPLATE_FILE = File.expand_path(File.dirname(__FILE__)) + "/../../../lib/chef/knife/bootstrap/windows-chef-client-msi.erb"
+TEMPLATE_FILE = File.expand_path(File.dirname(__FILE__)) + "/../../../lib/chef/knife/winops_bootstrap/windows-chef-client-msi.erb"
 
 require 'spec_helper'
 
-describe Chef::Knife::BootstrapWindowsWinrm do
+describe Chef::Knife::BootstrapWindowsWinRM do
   let(:template_file) { TEMPLATE_FILE }
   let(:options) { [] }
   let(:rendered_template) do
@@ -44,7 +44,7 @@ describe Chef::Knife::BootstrapWindowsWinrm do
 
   before(:each) do
     Chef::Log.logger = Logger.new(StringIO.new)
-    @knife = Chef::Knife::BootstrapWindowsWinrm.new
+    @knife = Chef::Knife::BootstrapWindowsWinRM.new
     # Merge default settings in.
     @knife.merge_configs
     @knife.config[:template_file] = template_file

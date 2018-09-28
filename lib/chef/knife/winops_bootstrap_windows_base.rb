@@ -19,16 +19,16 @@
 require 'chef/knife'
 require 'chef/knife/bootstrap'
 require 'chef/encrypted_data_bag_item'
-require 'chef/knife/core/windows_bootstrap_context'
-require 'chef/knife/knife_windows_base'
+require 'chef/knife/winops_core/windows_bootstrap_context'
+require 'chef/knife/winops_knife_windows_base'
 # Chef 11 PathHelper doesn't have #home
 #require 'chef/util/path_helper'
 
 class Chef
   class Knife
-    module BootstrapWindowsBase
+    module BootstrapWindowsCore
 
-      include Chef::Knife::KnifeWindowsBase
+      include Chef::Knife::KnifeWindowsCore
 
       # :nodoc:
       # Would prefer to do this in a rational way, but can't be done b/c of
@@ -231,7 +231,7 @@ class Chef
       end
 
       def default_bootstrap_template
-        "windows-chef-client-msi"
+        "windows-bootstrap-template"
       end
 
       def bootstrap_template
@@ -258,7 +258,7 @@ class Chef
         bootstrap_files << File.join(File.dirname(__FILE__), 'bootstrap/templates', "#{template}.erb")
         bootstrap_files << File.join(Knife.chef_config_dir, "bootstrap", "#{template}.erb") if Chef::Knife.chef_config_dir
         ::Knife::Windows::PathHelper.all_homes('.chef', 'bootstrap', "#{template}.erb") { |p| bootstrap_files << p }
-        bootstrap_files << Gem.find_files(File.join("chef","knife","bootstrap","#{template}.erb"))
+        bootstrap_files << Gem.find_files(File.join("chef","knife","winops_bootstrap","#{template}.erb"))
         bootstrap_files.flatten!
 
         template = Array(bootstrap_files).find do |bootstrap_template|
@@ -277,7 +277,7 @@ class Chef
       end
 
       def bootstrap_context
-        @bootstrap_context ||= Knife::Core::WindowsBootstrapContext.new(config, config[:run_list], Chef::Config)
+        @bootstrap_context ||= Knife::Core::WinBootstrapContext.new(config, config[:run_list], Chef::Config)
       end
 
       def load_correct_secret

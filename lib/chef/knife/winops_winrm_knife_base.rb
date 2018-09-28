@@ -18,13 +18,13 @@
 
 
 require 'chef/knife'
-require 'chef/knife/winrm_base'
-require 'chef/knife/winrm_shared_options'
-require 'chef/knife/knife_windows_base'
+require 'chef/knife/winops_winrm_base'
+require 'chef/knife/winops_winrm_shared_options'
+require 'chef/knife/winops_knife_windows_base'
 
 class Chef
   class Knife
-    module WinrmCommandSharedFunctions
+    module WinrmCommandCommon
 
       FAILED_BASIC_HINT ||= "Hint: Please check winrm configuration 'winrm get winrm/config/service' AllowUnencrypted flag on remote server."
       FAILED_NOT_BASIC_HINT ||= <<-eos.gsub /^\s+/, ""
@@ -38,16 +38,16 @@ class Chef
 
           @@ssl_warning_given = false
 
-          include Chef::Knife::WinrmBase
-          include Chef::Knife::WinrmSharedOptions
-          include Chef::Knife::KnifeWindowsBase
+          include Chef::Knife::WinrmCore
+          include Chef::Knife::WinrmOptions
+          include Chef::Knife::KnifeWindowsCore
 
           def validate_winrm_options!
             winrm_auth_protocol = locate_config_value(:winrm_authentication_protocol)
 
-            if ! Chef::Knife::WinrmBase::WINRM_AUTH_PROTOCOL_LIST.include?(winrm_auth_protocol)
+            if ! Chef::Knife::WinrmCore::WINRM_AUTH_PROTOCOL_LIST.include?(winrm_auth_protocol)
               ui.error "Invalid value '#{winrm_auth_protocol}' for --winrm-authentication-protocol option."
-              ui.info "Valid values are #{Chef::Knife::WinrmBase::WINRM_AUTH_PROTOCOL_LIST.join(",")}."
+              ui.info "Valid values are #{Chef::Knife::WinrmCore::WINRM_AUTH_PROTOCOL_LIST.join(",")}."
               exit 1
             end
 

@@ -18,14 +18,14 @@
 
 require 'httpclient'
 require 'chef/knife'
-require 'chef/knife/winrm_knife_base'
-require 'chef/knife/wsman_endpoint'
+require 'chef/knife/winops_winrm_knife_base'
+require 'chef/knife/winops_wsman_endpoint'
 
 class Chef
   class Knife
     class WsmanTest < Knife
 
-      include Chef::Knife::WinrmCommandSharedFunctions
+      include Chef::Knife::WinrmCommandCommon
 
       deps do
         require 'chef/search/query'

@@ -20,7 +20,7 @@ require 'chef/knife/core/bootstrap_context'
 # Chef::Util::PathHelper in Chef 11 is a bit juvenile still
 require 'knife-winops/path_helper'
 # require 'chef/util/path_helper'
-require 'chef/knife/core/windows_bootstrap_context'
+require 'chef/knife/winops_core/windows_bootstrap_context'
 
 class Chef
   class Knife
@@ -31,7 +31,7 @@ class Chef
       # * @config   - a hash of knife's config values
       # * @run_list - the run list for the node to boostrap
       #
-      class WindowsBootstrapContext < BootstrapContext
+      class WinBootstrapContext < BootstrapContext
         PathHelper = ::Knife::Windows::PathHelper
 
         attr_accessor :client_pem
@@ -224,23 +224,23 @@ filename_in_envvar
         end
 
         def win_cmd_tail(target_filename)
-          cmd_tail_file = Gem.find_files(File.join('chef', 'knife', 'bootstrap', 'tail.cmd')).first
+          cmd_tail_file = Gem.find_files(File.join('chef', 'knife', 'winops_bootstrap', 'tail.cmd')).first
           cmd_tail_content = IO.read(cmd_tail_file)
           win_parse_file_content(cmd_tail_content, target_filename)
         end
 
         def bootstrap_context
-          @bootstrap_context ||= Knife::Core::WindowsBootstrapContext.new(@config, @config[:run_list], Chef::Config)
+          @bootstrap_context ||= Knife::Core::WinBootstrapContext.new(@config, @config[:run_list], Chef::Config)
         end
 
         def win_ps_bootstrap(target_filename)
-          ps_bootstrap_file = Gem.find_files(File.join('chef', 'knife', 'bootstrap', 'bootstrap.ps1')).first
+          ps_bootstrap_file = Gem.find_files(File.join('chef', 'knife', 'winops_bootstrap', 'bootstrap.ps1')).first
           ps_bootstrap_content = IO.read(ps_bootstrap_file)
           win_parse_file_content(ps_bootstrap_content, target_filename)
         end
 
         def win_schedtask_xml(target_filename)
-          sched_xml_file = Gem.find_files(File.join('chef', 'knife', 'bootstrap', 'Chef_bootstrap.erb')).first
+          sched_xml_file = Gem.find_files(File.join('chef', 'knife', 'winops_bootstrap', 'Chef_bootstrap.erb')).first
           sched_xml_file_content = IO.read(sched_xml_file).chomp
           win_parse_file_content(Erubis::Eruby.new(sched_xml_file_content).evaluate(bootstrap_context), target_filename)
         end

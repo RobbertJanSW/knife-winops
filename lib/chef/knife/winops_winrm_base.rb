@@ -22,7 +22,7 @@ require 'kconv'
 
 class Chef
   class Knife
-    module WinrmBase
+    module WinrmCore
 
       # It includes supported WinRM authentication protocol.
       WINRM_AUTH_PROTOCOL_LIST ||= %w{basic negotiate kerberos}

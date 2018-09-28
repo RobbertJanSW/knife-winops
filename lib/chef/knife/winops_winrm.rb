@@ -17,19 +17,19 @@
 #
 
 require 'chef/knife'
-require 'chef/knife/winrm_knife_base'
-require 'chef/knife/windows_cert_generate'
-require 'chef/knife/windows_cert_install'
-require 'chef/knife/windows_listener_create'
-require 'chef/knife/winrm_session'
-require 'chef/knife/knife_windows_base'
+require 'chef/knife/winops_winrm_knife_base'
+require 'chef/knife/winops_windows_cert_generate'
+require 'chef/knife/winops_windows_cert_install'
+require 'chef/knife/winops_windows_listener_create'
+require 'chef/knife/winops_winrm_session'
+require 'chef/knife/winops_knife_windows_base'
 
 class Chef
   class Knife
     class Winrm < Knife
 
-      include Chef::Knife::WinrmCommandSharedFunctions
-      include Chef::Knife::KnifeWindowsBase
+      include Chef::Knife::WinrmCommandCommon
+      include Chef::Knife::KnifeWindowsCore
 
       deps do
         require 'readline'
