@@ -23,7 +23,7 @@ module Knife
   module Windows
     class PathHelper
       # Maximum characters in a standard Windows path (260 including drive letter and NUL)
-      WIN_MAX_PATH = 259
+      WIN_MAX_PATH ||= 259
 
       def self.dirname(path)
         if Chef::Platform.windows?
@@ -44,7 +44,7 @@ module Knife
         end
       end
 
-      BACKSLASH = '\\'.freeze
+      BACKSLASH ||= '\\'.freeze
 
       def self.path_separator
         if Chef::Platform.windows?
