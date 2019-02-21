@@ -251,12 +251,15 @@ IF NOT !psexitcode!==0 (
   echo *******************************************************************
   echo Powershell bootstrap script exit code was not 0! Stopping!
   echo The exit code of the script was !psexitcode!
-  SET "exitcodeinvalid="&for /f "delims=0123456789" %%i in ("!psexitcode!") do set exitcodeinvalid=%%i
-  IF defined exitcodeinvalid (
-    set /a psexitcode=!psexitcode!+1
+  set /a psexitcodesanitised=!psexitcode!+1
+  set /a psexitcode=!psexitcodesanitised!-1
+  IF !psexitcode!==0 (
+    set /a psexitcodesanitised=!psexitcode!+1
+  ) else (
+    set /a psexitcodesanitised=!psexitcode!
   )
-  echo Returning exit code !psexitcode!
-  exit !psexitcode!
+  echo Returning exit code !psexitcodesanitised!
+  exit !psexitcodesanitised!
 )
 echo Powershell bootstrap script reported succesful Chef install.
 <% unless @chef_config[:knife][:bootstrap_run_command] || @config[:bootstrap_run_command] %>
