@@ -251,9 +251,8 @@ IF NOT !psexitcode!==0 (
   echo *******************************************************************
   echo Powershell bootstrap script exit code was not 0! Stopping!
   echo The exit code of the script was !psexitcode!
-  set /a psexitcode=!psexitcode!+1
-  set /a psexitcode=!psexitcode!-1
-  IF !psexitcode!==0 (
+  SET "exitcodeinvalid="&for /f "delims=0123456789" %%i in ("!psexitcode!") do set exitcodeinvalid=%%i
+  IF defined exitcodeinvalid (
     set /a psexitcode=!psexitcode!+1
   )
   echo Returning exit code !psexitcode!
