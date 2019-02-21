@@ -112,7 +112,10 @@ if ($config['CHEF_CUSTOM_RUN_COMMAND']) {
   Try {
     Invoke-Expression $config['CHEF_CUSTOM_RUN_COMMAND']
   } catch {
-    $chefrun_exitcode = $_.FullyQualifiedErrorId
+    $chefrun_exitcode = [int]$_.FullyQualifiedErrorId
+    if ($chefrun_exitcode -eq 0) {
+      $chefrun_exitcode = 23269;
+    }
   }
 } else {
   $chefrun_process = Start-Process -PassThru -Wait c:/opscode/chef/bin/chef-client.bat -ArgumentList "-c `"$($config['CHEF_BOOTSTRAP_DIRECTORY'])/client.rb`" -j `"$($config['CHEF_BOOTSTRAP_DIRECTORY'])/first-boot.json`" $($config['CHEF_ENVIRONMENT_OPTION']) -L `"$($config['CHEF_BOOTSTRAP_DIRECTORY'])/firstrun.log`""
