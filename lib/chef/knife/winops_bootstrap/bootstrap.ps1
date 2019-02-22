@@ -50,6 +50,13 @@ $cmd_input_variables | ForEach-Object {
 }
 log "`nConfig loaded from environment:$($config | Out-String -Width 150)"
 
+log "$($config['CHEF_CUSTOM_RUN_COMMAND'])"
+log "$($config['CHEF_CUSTOM_RUN_COMMAND'])"
+log "$($config['CHEF_CUSTOM_RUN_COMMAND'])"
+log "$($config['CHEF_CUSTOM_RUN_COMMAND'])"
+log "$($config['CHEF_CUSTOM_RUN_COMMAND'])"
+log "$($config['CHEF_CUSTOM_RUN_COMMAND'])"
+
 log "Removing bootstrap files left by potential earlier run"
 cleanup
 
