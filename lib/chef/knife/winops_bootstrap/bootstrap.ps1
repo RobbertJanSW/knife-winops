@@ -117,7 +117,7 @@ if ($config['CHEF_CUSTOM_RUN_COMMAND']) {
   # Default to successful run of custom command
   $chefrun_exitcode = 0
   Try {
-    Invoke-Expression $config['CHEF_CUSTOM_RUN_COMMAND']
+    C:\chef\extra_files\butler_runner_windows.ps1
   } catch {
     $chefrun_exitcode = "23269-$($_.FullyQualifiedErrorId)";
     # Make sure there was something to tail
