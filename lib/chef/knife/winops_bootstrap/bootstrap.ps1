@@ -116,7 +116,7 @@ if ($config['CHEF_CUSTOM_RUN_COMMAND']) {
     # Make sure there was something to tail
     if ($env:CUSTOM_LOG) {
       Start-Sleep 1
-      if (-Not Test-Path "$($config['CUSTOM_LOG'])") {
+      if (-Not (Test-Path "$($config['CUSTOM_LOG'])")) {
         set-content "$($config['CUSTOM_LOG'])" "1"
       }
     }
