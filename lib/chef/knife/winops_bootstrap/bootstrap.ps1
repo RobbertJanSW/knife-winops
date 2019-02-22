@@ -113,6 +113,13 @@ if ($config['CHEF_CUSTOM_RUN_COMMAND']) {
     Invoke-Expression $env:CHEF_CUSTOM_RUN_COMMAND
   } catch {
     $chefrun_exitcode = 23269;
+    # Make sure there was something to tail
+    if ($env:CUSTOM_LOG) {
+      Start-Sleep 1
+      if (-Not Test-Path "$($config['CUSTOM_LOG'])") {
+        set-content "$($config['CUSTOM_LOG'])" "1"
+      }
+    }
   }
 } else {
   $chefrun_process = Start-Process -PassThru -Wait c:/opscode/chef/bin/chef-client.bat -ArgumentList "-c `"$($config['CHEF_BOOTSTRAP_DIRECTORY'])/client.rb`" -j `"$($config['CHEF_BOOTSTRAP_DIRECTORY'])/first-boot.json`" $($config['CHEF_ENVIRONMENT_OPTION']) -L `"$($config['CHEF_BOOTSTRAP_DIRECTORY'])/firstrun.log`""
