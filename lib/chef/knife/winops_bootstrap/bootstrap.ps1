@@ -112,7 +112,7 @@ if ($config['CHEF_CUSTOM_RUN_COMMAND']) {
   Try {
     Invoke-Expression "$($config['CHEF_CUSTOM_RUN_COMMAND'])"
   } catch {
-    $chefrun_exitcode = 23269;
+    $chefrun_exitcode = "23269-$($_.FullyQualifiedErrorId)";
     # Make sure there was something to tail
     if ($env:CUSTOM_LOG) {
       Start-Sleep 1
