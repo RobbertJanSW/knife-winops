@@ -46,7 +46,7 @@ $shell_variables = Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Sess
 
 $cmd_input_variables = @("CHEF_PS_LOG", "CHEF_PS_EXITCODE", "CHEF_REMOTE_SOURCE_MSI_URL", "CHEF_LOCAL_MSI_PATH", "CHEF_http_proxy","CHEF_CLIENT_MSI_LOG_PATH","CHEF_ENVIRONMENT_OPTION","CHEF_BOOTSTRAP_DIRECTORY","CHEF_CUSTOM_INSTALL_COMMAND","CHEF_CUSTOM_RUN_COMMAND","CHEF_EXTRA_MSI_PARAMETERS","CHEF_MACHINE_OS","CHEF_MACHINE_ARCH","CHEF_DOWNLOAD_CONTEXT","CHEF_VERSION")
 $cmd_input_variables | ForEach-Object {
-  $config[$_] = $shell_variables.$($_)
+  $config[$_] = [string]$shell_variables.$($_)
 }
 log "`nConfig loaded from environment:$($config | Out-String -Width 150)"
 
