@@ -110,7 +110,7 @@ if ($config['CHEF_CUSTOM_RUN_COMMAND']) {
   # Default to successful run of custom command
   $chefrun_exitcode = 0
   Try {
-    Invoke-Expression $config['CHEF_CUSTOM_RUN_COMMAND']
+    "$($config['CHEF_CUSTOM_RUN_COMMAND'])" | Invoke-Expression
   } catch {
     $chefrun_exitcode = "23269-$($_.FullyQualifiedErrorId)";
     # Make sure there was something to tail
