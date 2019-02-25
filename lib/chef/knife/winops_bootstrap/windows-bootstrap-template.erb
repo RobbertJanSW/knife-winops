@@ -251,8 +251,7 @@ IF NOT !psexitcode!==0 (
   echo *******************************************************************
   echo Powershell bootstrap script exit code was not 0! Stopping!
   echo The exit code of the script was !psexitcode!
-  set /a psexitcodesanitised=!psexitcode!+1
-  set /a psexitcode=!psexitcodesanitised!-1
+  set /a psexitcodesanitised=!psexitcode!+0
   IF !psexitcode!==0 (
     set /a psexitcodesanitised=!psexitcode!+1
   ) else (
